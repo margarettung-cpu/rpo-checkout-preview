@@ -273,6 +273,33 @@
   }
   .appt-card-payment-detail .caption { color: var(--gray-900); }
 
+  /* PSP provider welcome card (no appointment yet — ported patient) */
+  .appt-card-psp {
+    background: var(--beige-100); border-radius: 6px;
+    padding: 24px 20px; width: 100%; max-width: 460px;
+    display: flex; flex-direction: column; gap: 14px;
+    align-items: center; text-align: center;
+  }
+  .psp-provider-photo {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: linear-gradient(135deg, #d4a574, #a88569);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: 'VC Honey', serif; font-size: 36px; font-weight: 400;
+  }
+  .psp-provider-name {
+    font-size: 17px; line-height: 22px; font-weight: 600;
+    color: var(--gray-900); margin-bottom: -10px;
+  }
+  .psp-provider-title {
+    font-size: 14px; line-height: 18px; color: var(--gray-800);
+  }
+  .psp-message {
+    font-size: 14px; line-height: 20px; color: var(--gray-900);
+    max-width: 340px; margin-top: 4px;
+  }
+  .psp-message strong { font-weight: 600; }
+
   /* RIGHT: content pane */
   .agora-right {
     padding: 60px 80px; background: white;
@@ -471,28 +498,17 @@
               <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
               <div class="appt-card-wrap">
                 <div class="appt-card-branded">
-                  <div class="appt-card-top">
-                    <div class="appt-card-avatar">G</div>
-                    <div class="appt-card-info">
-                      <div class="appt-card-title">Session with Georgia</div>
-                      <div class="appt-card-rows">
-                        <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
-                        <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
-                      </div>
-                    </div>
-                  </div>
-                  <hr class="appt-card-divider" />
-                  <div class="appt-card-payment-grid">
-                    <div class="appt-card-payment-detail">
-                      <div class="icon-20"><img src="icons/money.svg" alt="" /></div>
-                      <div class="caption">Book now, pay after session</div>
-                    </div>
-                    <div class="appt-card-payment-detail">
-                      <div class="icon-20"><img src="icons/armchair.svg" alt="" /></div>
-                      <div class="caption">Free cancellation until April 1, 7:30pm</div>
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -561,22 +577,17 @@
               <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
               <div class="appt-card-wrap">
                 <div class="appt-card-branded">
-                  <div class="appt-card-top">
-                    <div class="appt-card-avatar">G</div>
-                    <div class="appt-card-info">
-                      <div class="appt-card-title">Session with Georgia</div>
-                      <div class="appt-card-rows">
-                        <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
-                        <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
-                      </div>
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
                     </div>
                   </div>
-                  <hr class="appt-card-divider" />
-                  <div class="appt-card-payment-grid">
-                    <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
-                    <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
-                  </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -756,12 +767,7 @@
                       <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
                       <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
                     </div>
-</div>
-                </div>
-                <hr class="appt-card-divider" />
-                <div class="appt-card-payment-grid">
-                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
-                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -871,12 +877,7 @@
                       <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
                       <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
                     </div>
-</div>
-                </div>
-                <hr class="appt-card-divider" />
-                <div class="appt-card-payment-grid">
-                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
-                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -949,17 +950,12 @@
           <div class="agora-left-overlay">
             <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
             <div class="appt-card-wrap">
-              <div class="appt-card-branded">
-                <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
-                  <div class="appt-card-info">
-                    <div class="appt-card-title">Ongoing care with Georgia</div>
-                    <div class="appt-card-rows">
-                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
-                      <div class="appt-card-row"><span class="icon-20"><img src="icons/money.svg" alt="" /></span>$150 private pay</div>
-                    </div>
-</div>
-                </div>
+              <div class="appt-card-psp">
+                <div class="psp-provider-photo">L</div>
+                <div class="psp-provider-name">Lincoln Stark</div>
+                <div class="psp-provider-title">MD</div>
+                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
+                <div class="psp-message"><strong>You'll just need to add a few more items on the next screen to complete the setup process.</strong></div>
               </div>
             </div>
           </div>
