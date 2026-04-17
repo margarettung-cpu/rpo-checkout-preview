@@ -585,7 +585,8 @@
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="flow">High-level flow</button>
     <button class="tab-btn" data-tab="appointment-card">Appointment card</button>
-    <button class="tab-btn" data-tab="insurance">Insurance states (step 2)</button>
+    <button class="tab-btn" data-tab="oon">Out of network</button>
+    <button class="tab-btn" data-tab="insurance">Insurance states</button>
   </div>
 </header>
 
@@ -1113,6 +1114,208 @@
               </div>
             </div>
             <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-oon">
+  <div class="preview-page">
+    <main class="main-content" style="flex: 1;">
+
+      <div class="state-block">
+        <div class="flow-intro">
+          <div class="headline" style="margin-bottom: 16px;">Provider out-of-network states</div>
+          <p class="body-17" style="color: var(--gray-800); max-width: 620px;">
+            Triggered when the selected/referring provider doesn't accept the patient's insurance (different from <code>LOOKUP_FAILED</code> or plan-level OON on the insurance step). Different CTA depending on whether the patient chose the provider themselves (Agora) or was referred (PSP / RPO).
+          </p>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 0;">1. Agora (self-serve) — OON with recommendations</h2>
+
+      <section class="state-block" id="oon-agora">
+        <div class="state-header">
+          <div class="state-title"><h3>OON — Agora / self-serve</h3><span class="status-badge status-done">Already in Agora</span></div>
+          <p class="state-desc">Patient searched Headway and picked a provider whose network doesn't match their insurance. Redirect them to browse other providers who do accept their plan.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span><code>web/apps/patient/components/BookAppointmentFlow/components/OutOfNetworkErrorPage.tsx</code></span></li>
+            <li><strong>Trigger</strong><span><code>handleConfirmBooking</code> returns <code>PROVIDER_OON</code> error, OR <code>useInsuranceLookup</code> surfaces <code>OON_FOR_NETWORK_SELECTION_ERROR_TYPE</code></span></li>
+            <li><strong>Recommendations data</strong><span><code>useRecommendedProviders(benefitsCarrierId, patientState)</code> — returns up to 3 providers who accept the patient's plan</span></li>
+            <li><strong>CTAs</strong><span><em>See all matching providers</em> → <code>/providers?carrier=&lt;id&gt;&amp;state=&lt;state&gt;</code>; <em>Go back and edit your information</em> → resets insurance form</span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="appt-card-payment-grid" style="padding-top: 4px;">
+                    <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
+                    <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <div class="state-content">
+              <div class="state-text-group">
+                <div class="headline">Georgia isn't able to see you, but we've got you covered</div>
+                <div class="body-17">Georgia doesn't accept your plan, but we found lots of other great providers who do.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="font-size: 17px; line-height: 22px; font-weight: 500; color: var(--gray-900);">Our recommendations</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
+                  <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #A69079 0%, #7A6652 100%); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500;">E</div>
+                    <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900); text-decoration: underline;">Eric Redd</div>
+                  </a>
+                  <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #7A5A3F 0%, #4D3827 100%); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500;">A</div>
+                    <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900); text-decoration: underline;">Aubrey Gray</div>
+                  </a>
+                  <a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #5E6B8C 0%, #2F3B52 100%); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500;">H</div>
+                    <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900); text-decoration: underline;">Helen Blue</div>
+                  </a>
+                </div>
+              </div>
+
+              <div class="btn-stack">
+                <button class="btn-primary" style="width: 100%;">See all 100+ matching providers</button>
+                <button class="btn-secondary" style="width: 100%;">Go back and edit your information</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2>2. PSP — Discuss private pay with your provider</h2>
+
+      <section class="state-block" id="oon-psp">
+        <div class="state-header">
+          <div class="state-title"><h3>OON — PSP / Provider-ported</h3><span class="rpo-tag">PSP</span></div>
+          <p class="state-desc">Patient was invited by Georgia. Since Georgia is the only relevant provider, don't show alternative recommendations — direct the patient to Georgia to discuss private pay or off-platform billing.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">Design direction</div>
+          <ul class="impl-notes-list">
+            <li><strong>Trigger</strong><span><code>entryPoint === 'PSP'</code> AND provider benefits lookup returns OON</span></li>
+            <li><strong>Suppress</strong><span>No "See all matching providers" — patient came from this specific provider</span></li>
+            <li><strong>Primary CTA</strong><span><em>Message Georgia</em> → <code>/messaging/&lt;providerId&gt;</code> in care portal; patient and Georgia coordinate private pay or off-platform billing directly</span></li>
+            <li><strong>Target</strong><span>New display state in <code>UnifiedCheckout/steps/InsuranceStep.tsx</code> — e.g. <code>PROVIDER_OON_DEFERRED</code></span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Georgia Brown</div>
+                      <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <div class="state-content">
+              <div class="state-text-group">
+                <div class="headline">Georgia doesn't accept your plan on Headway</div>
+                <div class="body-17">Reach out to Georgia to talk about paying out of pocket or other billing options for your sessions.</div>
+              </div>
+
+              <div class="guidance-info">
+                <div class="body-16-m">You're still welcome to see Georgia</div>
+                <div class="body-16">Many providers offer private-pay rates or sliding-scale fees. Message Georgia to discuss what works for you.</div>
+              </div>
+
+              <div class="btn-stack">
+                <button class="btn-primary" style="width: 100%;">Message Georgia</button>
+                <button class="btn-secondary" style="width: 100%;">Go back and edit your insurance</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2>3. RPO — Discuss private pay (appointment booked)</h2>
+
+      <section class="state-block" id="oon-rpo">
+        <div class="state-header">
+          <div class="state-title"><h3>OON — RPO / Referring Provider</h3><span class="rpo-tag">RPO</span></div>
+          <p class="state-desc">Referrer already scheduled an appointment for the patient, but their insurance isn't accepted. Since the appointment exists on the provider's calendar, the messaging acknowledges the upcoming session and pivots to private-pay conversation.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">Design direction</div>
+          <ul class="impl-notes-list">
+            <li><strong>Trigger</strong><span><code>entryPoint === 'RPO'</code> AND <code>providerEvent</code> is scheduled AND insurance returns OON</span></li>
+            <li><strong>Copy differences vs PSP</strong><span>References the upcoming session date; patient may need to make a decision before the appointment occurs</span></li>
+            <li><strong>Primary CTA</strong><span><em>Message Georgia</em> — same as PSP</span></li>
+            <li><strong>Alternative flow</strong><span>If patient can't afford private pay, they should have a path to cancel the appointment gracefully; clarify with RPO team on expected behavior</span></li>
+            <li><strong>Target</strong><span>Same <code>PROVIDER_OON_DEFERRED</code> display state; conditional copy on whether <code>providerEvent</code> exists</span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <div class="state-content">
+              <div class="state-text-group">
+                <div class="headline">Georgia doesn't accept your plan on Headway</div>
+                <div class="body-17">We won't be able to bill your insurance for your Apr 3rd session. Connect with Georgia to discuss paying out of pocket or other billing options before your appointment.</div>
+              </div>
+
+              <div class="guidance-info">
+                <div class="body-16-m">Your session is still scheduled</div>
+                <div class="body-16">Georgia will keep your Apr 3rd appointment on the calendar. Message her to figure out billing before the session, or to reschedule if needed.</div>
+              </div>
+
+              <div class="btn-stack">
+                <button class="btn-primary" style="width: 100%;">Message Georgia</button>
+                <button class="btn-secondary" style="width: 100%;">Go back and edit your insurance</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
