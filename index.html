@@ -183,11 +183,65 @@
   .migration-links a { color: var(--green-800); text-decoration: underline; }
 
   /* Guidance cards */
-  .guidance-error { background: var(--red-bg); border-left: 4px solid var(--red-border); padding: 16px; border-radius: 6px; }
-  .guidance-warning { background: var(--warning-bg); border-left: 4px solid var(--warning-border); padding: 16px; border-radius: 6px; }
+  /* Helix GuidanceCard — L2 Helix Components Figma (1914:9585)
+     Colors from packages/helix/src/product/assets/css/vars.css:
+     warning bg/fg = #FFF6E9 / #F09E29, danger bg/fg = #FEEEEC / #FD5139, info bg/fg = #E8F3FF / #1789FC.
+     Structure from packages/helix/src/product/assets/css/content.css: padding 12px 16px,
+     radius 4px, flex gap 12px, icon 20px top-left, vertical layout stacks title + body. */
+  .guidance-error,
+  .guidance-warning,
+  .guidance-info {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    grid-auto-rows: min-content;
+    column-gap: 12px;
+    row-gap: 8px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    color: #353535;
+    font-family: 'Post Grotesk', sans-serif;
+  }
+  .guidance-error::before,
+  .guidance-warning::before,
+  .guidance-info::before {
+    content: '';
+    grid-column: 1; grid-row: 1;
+    width: 20px; height: 20px;
+    margin-top: 2px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  .guidance-error > *,
+  .guidance-warning > *,
+  .guidance-info > * { grid-column: 2; margin: 0 !important; }
+  .guidance-warning { background: #FFF6E9; }
+  .guidance-warning::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%23F09E29'><path d='M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,128a12,12,0,1,1,12-12A12,12,0,0,1,128,208Z'/></svg>");
+  }
+  .guidance-error { background: #FEEEEC; }
+  .guidance-error::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%23FD5139'><path d='M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,128a12,12,0,1,1,12-12A12,12,0,0,1,128,208Z'/></svg>");
+  }
+  .guidance-info { background: #E8F3FF; }
+  .guidance-info::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%231789FC'><path d='M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-4,48a12,12,0,1,1-12,12A12,12,0,0,1,124,72Zm12,112a16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40a8,8,0,0,1,0,16Z'/></svg>");
+  }
+  /* Title and body tokens match Helix typography-content-body-medium / body */
+  .guidance-error > .body-16-m,
+  .guidance-warning > .body-16-m,
+  .guidance-info > .body-16-m {
+    font-size: 16px; line-height: 22px; font-weight: 500; padding-top: 2px;
+  }
+  .guidance-error > .body-16,
+  .guidance-warning > .body-16,
+  .guidance-info > .body-16 {
+    font-size: 16px; line-height: 22px; font-weight: 400;
+  }
 
   /* Inputs */
   .input { border: 1px solid var(--gray-500); padding: 12px 14px; border-radius: 6px; width: 100%; background: white; font-size: 16px; font-family: inherit; color: var(--gray-900); }
+  .input-disabled, .input:disabled { background: var(--gray-200); color: var(--gray-800); cursor: not-allowed; }
   .input-error { border-color: var(--red-border); }
   .label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--gray-900); }
   .field-error { font-size: 13px; color: var(--red-border); margin-top: 4px; }
@@ -255,10 +309,10 @@
   .appt-card-top { display: flex; gap: 16px; align-items: center; align-self: stretch; }
   .appt-card-avatar {
     width: 90px; height: 90px; border-radius: 77px;
-    background: linear-gradient(135deg, #d4a574, #a88569);
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-family: 'Fraunces', serif; font-size: 32px; font-weight: 400;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .appt-card-avatar img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
   .appt-card-info { display: flex; flex-direction: column; gap: 8px; flex: 1; }
   .appt-card-title { font-size: 15px; line-height: 20px; font-weight: 500; color: var(--gray-900); }
@@ -274,32 +328,47 @@
   .appt-card-payment-detail .caption { color: var(--gray-900); }
 
   /* PSP provider welcome card (no appointment yet — ported patient) */
+  /* Matches Figma: Checkout 2026 — node 1:1896 */
   .appt-card-psp {
     background: var(--beige-100); border-radius: 6px;
-    padding: 24px 20px; width: 100%; max-width: 460px;
-    display: flex; flex-direction: column; gap: 14px;
-    align-items: flex-start; text-align: left;
+    padding: 20px; width: 100%; max-width: 460px;
+    display: flex; flex-direction: column; gap: 0;
+    align-items: stretch; text-align: left;
+  }
+  .appt-card-psp .psp-header {
+    padding-bottom: 12px; margin-bottom: 12px;
+    border-bottom: 1px solid #DADCE0;
+  }
+  .psp-header {
+    display: flex; gap: 16px; align-items: center; width: 100%;
   }
   .psp-provider-photo {
-    width: 100px; height: 100px; border-radius: 50%;
+    width: 90px; height: 90px; border-radius: 50%;
     overflow: hidden; flex-shrink: 0;
   }
   .psp-provider-photo img {
     width: 100%; height: 100%; object-fit: cover;
     display: block;
   }
+  .psp-info {
+    display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  }
   .psp-provider-name {
-    font-size: 17px; line-height: 22px; font-weight: 600;
-    color: var(--gray-900); margin-bottom: -10px;
+    font-size: 15px; line-height: 20px; font-weight: 500;
+    color: var(--gray-900);
   }
   .psp-provider-title {
-    font-size: 14px; line-height: 18px; color: var(--gray-800);
+    font-size: 14px; line-height: 18px; color: var(--gray-900);
+    font-weight: 400;
+  }
+  .psp-video-row {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 15px; line-height: 20px; color: var(--gray-900);
   }
   .psp-message {
-    font-size: 14px; line-height: 20px; color: var(--gray-900);
-    max-width: 340px; margin-top: 4px;
+    font-size: 14px; line-height: 18px; color: var(--gray-900);
   }
-  .psp-message strong { font-weight: 600; }
+  .psp-message strong { font-weight: 500; }
 
   /* RIGHT: content pane */
   .agora-right {
@@ -389,6 +458,20 @@
     margin-top: 8px;
   }
 
+  /* Add-to-calendar buttons on success screen */
+  .calendar-btn {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid var(--gray-500); border-radius: 6px;
+    background: white; padding: 10px 12px; cursor: pointer;
+    font-family: inherit; font-size: 15px; font-weight: 500; color: var(--gray-900);
+  }
+  .calendar-btn:hover { background: var(--gray-100); }
+  .calendar-logo { width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+  .calendar-logo-google { background: linear-gradient(135deg, #4285F4 50%, #EA4335 50%); }
+  .calendar-logo-apple { background: #000; }
+  .calendar-logo-outlook { background: #0078D4; }
+
   /* When block — placed at top of each state, right under the header */
   .when-block { background: var(--gray-200); padding: 12px 16px; border-radius: 6px; font-size: 13px; color: var(--gray-800); margin: 16px 24px 16px; border-left: 3px solid var(--gray-500); }
   .when-block strong { color: var(--gray-900); }
@@ -419,6 +502,38 @@
 
   /* High-level flow sequence */
   .flow-intro { padding: 32px; }
+  .flow-sticky-nav {
+    position: sticky; top: 96px; z-index: 5;
+    background: white; border-bottom: 1px solid var(--gray-500);
+    padding: 12px 32px;
+  }
+  .flow-toggle {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .flow-toggle-label { font-size: 14px; font-weight: 500; color: var(--gray-900); }
+  .flow-toggle-group {
+    display: inline-flex; border: 1px solid var(--gray-500); border-radius: 6px;
+    overflow: hidden; background: white;
+  }
+  .flow-toggle-btn {
+    padding: 8px 14px; font-size: 14px; font-weight: 500; color: var(--gray-800);
+    background: white; border: none; cursor: pointer; font-family: inherit;
+  }
+  .flow-toggle-btn + .flow-toggle-btn { border-left: 1px solid var(--gray-500); }
+  .flow-toggle-btn:hover { background: var(--gray-200); }
+  .flow-toggle-btn.active { background: var(--gray-1000); color: white; }
+
+  /* Scale rendered checkout screens to 80% so more fits on screen */
+  .agora-wrap { zoom: 0.8; }
+
+  /* Switch card variants based on booked / not-booked state */
+  .card-variant-booked { display: none; }
+  #tab-flow.booked .card-variant-not-booked { display: none; }
+  #tab-flow.booked .card-variant-booked { display: flex; }
+  #tab-flow.booked #flow-confirmation-setup,
+  #tab-flow.booked [data-confirmation-variant="setup"] { display: none; }
+  #tab-flow:not(.booked) #flow-confirmation-booked,
+  #tab-flow:not(.booked) [data-confirmation-variant="booked"] { display: none; }
   .flow-sequence {
     display: flex; flex-direction: column; gap: 16px;
     padding: 0 0 32px;
@@ -468,14 +583,25 @@
     </div>
   </div>
   <div class="tab-bar">
-    <button class="tab-btn" data-tab="flow">High-level flow</button>
-    <button class="tab-btn active" data-tab="insurance">Insurance states (step 2)</button>
+    <button class="tab-btn active" data-tab="flow">High-level flow</button>
+    <button class="tab-btn" data-tab="appointment-card">Appointment card</button>
+    <button class="tab-btn" data-tab="insurance">Insurance states (step 2)</button>
   </div>
 </header>
 
-<div class="tab-content" id="tab-flow">
+<div class="tab-content active" id="tab-flow">
   <div class="preview-page">
     <main class="main-content" style="flex: 1;">
+
+      <div class="flow-sticky-nav">
+        <div class="flow-toggle">
+          <div class="flow-toggle-label">Appointment status:</div>
+          <div class="flow-toggle-group">
+            <button class="flow-toggle-btn active" data-flow="not-booked">Not booked yet</button>
+            <button class="flow-toggle-btn" data-flow="booked">Appointment booked</button>
+          </div>
+        </div>
+      </div>
 
       <div class="state-block">
         <div class="flow-intro">
@@ -490,7 +616,7 @@
 
       <section class="state-block" id="flow-account">
         <div class="state-header">
-          <div class="state-title"><h3>ACCOUNT</h3><span class="status-badge status-scaffold">Figma: 4072:7715</span></div>
+          <div class="state-title"><h3>ACCOUNT</h3></div>
           <p class="state-desc">Patient lands on /onboard, creates their account (or completes it if partially provisioned by the referrer).</p>
         </div>
         <div class="agora-wrap">
@@ -498,21 +624,36 @@
             <div class="agora-left-overlay">
               <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
               <div class="appt-card-wrap">
-                <div class="appt-card-psp">
-                <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
-                <div class="psp-provider-name">Georgia</div>
-                <div class="psp-provider-title">MD</div>
-                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
-              </div>
+                <div class="appt-card-psp card-variant card-variant-not-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Georgia Brown</div>
+                      <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+                </div>
+                <div class="appt-card-psp card-variant card-variant-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+                </div>
               </div>
             </div>
           </div>
           <div class="agora-right">
-            <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
             <div class="state-content">
               <div class="state-text-group">
-                <div class="headline">We can't wait to introduce you to Georgia.</div>
-                <div class="body-17">We just need a few more details to finish booking. It should only take 5 min.</div>
+                <div class="headline">Just a few more steps till you're ready to see Georgia</div>
+                <div class="body-17">It should only take 5 min</div>
               </div>
               <div class="progress-bar">
                 <div class="progress-step"><div class="progress-circle progress-active">1</div><span class="progress-label progress-label-active">Account</span></div>
@@ -523,23 +664,30 @@
               </div>
               <div style="display: flex; flex-direction: column; gap: 20px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                  <div><label class="label">Legal first name</label><input class="input" /></div>
-                  <div><label class="label">Legal last name</label><input class="input" /></div>
+                  <div><label class="label">Legal first name</label><input class="input input-disabled" value="John" disabled /></div>
+                  <div><label class="label">Legal last name</label><input class="input input-disabled" value="Smith" disabled /></div>
                 </div>
-                <div class="caption-m" style="color: var(--gray-800); margin-top: -8px;">Provide the name of the person receiving care.</div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: -8px;">
+                  <div class="caption-m" style="color: var(--gray-800);">Pre-filled by Georgia.</div>
+                  <a href="#" class="caption-m" style="color: var(--gray-900); text-decoration: underline; font-weight: 500;">Edit</a>
+                </div>
                 <div style="display: flex; gap: 8px; align-items: flex-start;">
                   <div style="width: 20px; height: 20px; border: 1px solid #BEBEBE; border-radius: 2px; flex-shrink: 0; margin-top: 1px;"></div>
                   <span class="body-17">I go by a name different from my legal name.</span>
                 </div>
-                <div><label class="label">Email</label><input class="input" /></div>
+                <div>
+                  <label class="label">Email</label>
+                  <input class="input input-disabled" value="john.smith@gmail.com" disabled />
+                  <div class="caption-m" style="color: var(--gray-800); margin-top: 4px;">Pre-filled by Georgia. You'll use this email to log in to Headway.</div>
+                </div>
                 <div><label class="label">Phone number</label><input class="input" /></div>
                 <div>
                   <label class="label">Password</label>
-                  <div class="input" style="display: flex; justify-content: space-between; align-items: center;"><span></span><span>👁</span></div>
+                  <div class="input" style="display: flex; justify-content: space-between; align-items: center;"><span></span><span style="width: 24px; height: 24px; display: inline-flex;"><img src="icons/eye.svg" alt="Show password" style="width: 100%; height: 100%;" /></span></div>
                 </div>
                 <div>
                   <label class="label">Confirm password</label>
-                  <div class="input" style="display: flex; justify-content: space-between; align-items: center;"><span></span><span>👁</span></div>
+                  <div class="input" style="display: flex; justify-content: space-between; align-items: center;"><span></span><span style="width: 24px; height: 24px; display: inline-flex;"><img src="icons/eye.svg" alt="Show password" style="width: 100%; height: 100%;" /></span></div>
                 </div>
                 <div class="caption" style="color: var(--gray-800); line-height: 18px;">
                   By selecting <b>Sign up</b> and providing my phone number above, I agree to <a href="#" style="color: var(--gray-800); text-decoration: underline;">Headway's notification terms</a> and consent to receiving transactional and informational text messages at the number provided.
@@ -571,17 +719,32 @@
             <div class="agora-left-overlay">
               <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
               <div class="appt-card-wrap">
-                <div class="appt-card-psp">
-                <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
-                <div class="psp-provider-name">Georgia</div>
-                <div class="psp-provider-title">MD</div>
-                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
-              </div>
+                <div class="appt-card-psp card-variant card-variant-not-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Georgia Brown</div>
+                      <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+                </div>
+                <div class="appt-card-psp card-variant card-variant-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+                </div>
               </div>
             </div>
           </div>
           <div class="agora-right">
-            <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
             <div class="progress-bar">
               <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
               <div class="progress-line"></div>
@@ -621,25 +784,344 @@
 
       <h2 style="margin-top: 0;">Step 3 — Payment</h2>
 
-      <div class="flow-placeholder">
-        <h3>Payment screen placeholder</h3>
-        <p>Send me the Figma node URL for the Payment step and I'll build it in the Agora Checkout 2.0 layout.</p>
-      </div>
+      <section class="state-block" id="flow-payment">
+        <div class="state-header">
+          <div class="state-title"><h3>PAYMENT</h3><span class="status-badge status-done">Already in Agora</span></div>
+          <p class="state-desc">Patient adds a credit/debit card or bank account. The <code>PriceEstimateSavingsCard</code> communicates insurance savings, then the patient enters card details and confirms the booking.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span><code>web/apps/patient/components/BookAppointmentFlow/BookAppointmentCheckout.tsx</code> — combined payment + confirmation screen in current Agora flow</span></li>
+            <li><strong>Target</strong><span><code>web/apps/patient/components/UnifiedCheckout/steps/PaymentStep.tsx</code> + <code>BookingStep.tsx</code></span></li>
+            <li><strong>Payment card</strong><span><code>UserPaymentMethodsEntry</code> renders <code>PaymentMethodCard</code> (title "Add card" / subTitle "This can be a credit, debit, HSA, FSA, or HRA Card") wrapping the Stripe <code>PaymentElementCardForm</code></span></li>
+            <li><strong>Savings callout</strong><span><code>PriceEstimateSavingsCard</code> — yellow <code>#FFFBE6</code> card with <code>IconPiggyBank</code> and "How we estimate your cost" expandable</span></li>
+            <li><strong>Submit handler</strong><span><code>handleConfirmBooking()</code> → <code>createUserPaymentMethodMutation</code> → <code>ProviderEventApi.createEvent()</code></span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp card-variant card-variant-not-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Georgia Brown</div>
+                      <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+                </div>
+                <div class="appt-card-psp card-variant card-variant-booked">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <a href="#" style="display: inline-flex; align-items: center; gap: 4px; color: var(--gray-900); text-decoration: none; font-size: 17px; font-weight: 500; line-height: 22px; width: fit-content;"><span class="icon-24" style="width: 24px; height: 24px;"><img src="icons/chevron-left.svg" alt="" /></span>Back</a>
+            <div class="progress-bar">
+              <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+              <div class="progress-line"></div>
+              <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Insurance</span></div>
+              <div class="progress-line"></div>
+              <div class="progress-step"><div class="progress-circle progress-active">3</div><span class="progress-label progress-label-active">Payment</span></div>
+            </div>
+            <div class="state-content">
+              <div class="headline">Your estimated cost is $30 for this session</div>
+
+              <div style="background: #FFFBE6; border: 1px solid #FCEFC5; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+                  <div style="width: 20px; height: 20px;"><img src="icons/piggy-bank.svg" alt="" style="width: 100%; height: 100%;" /></div>
+                  <div class="body-16" style="line-height: 22px;">You're saving $150 per session on your out-of-pocket costs with Headway.</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <span style="width: 20px; height: 20px;"><img src="icons/question.svg" alt="" style="width: 100%; height: 100%;" /></span>
+                  <button class="btn-link" style="text-decoration: underline; font-weight: 500;">How we estimate your cost</button>
+                  <span style="width: 24px; height: 24px;"><img src="icons/chevron-down.svg" alt="" style="width: 100%; height: 100%;" /></span>
+                </div>
+              </div>
+
+              <hr style="border: none; border-top: 1px solid #DADCE0; margin: 0;" />
+
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="font-size: 17px; line-height: 22px; font-weight: 500; color: var(--gray-900);">Add your payment details on file to confirm booking</div>
+                <div style="border: 1px solid #DADCE0; border-radius: 4px; padding: 20px; background: white; display: flex; flex-direction: column; gap: 16px;">
+                  <div>
+                    <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900); margin-bottom: 4px;">Add card</div>
+                    <div style="font-size: 13px; line-height: 16px; font-weight: 400; color: var(--gray-900);">This can be a credit, debit, HSA, FSA, or HRA card</div>
+                  </div>
+                  <div>
+                    <div style="border-bottom: 1px solid #717171; padding: 7px 0;">
+                      <div style="font-size: 14px; line-height: 18px; color: #717171;">Card number</div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 16px; color: #717171; margin-top: 4px;">Your payment info will be stored securely by <a href="#" style="color: #13AA65; text-decoration: none;">Stripe</a>.</div>
+                  </div>
+                  <div style="display: flex; gap: 8px; align-items: flex-start;">
+                    <div style="width: 20px; height: 20px; border: 1px solid #BEBEBE; border-radius: 2px; flex-shrink: 0; margin-top: 1px;"></div>
+                    <span style="font-size: 14px; line-height: 18px; color: var(--gray-900);">This is an <span style="text-decoration: underline; text-decoration-style: dotted;">HSA, FSA, or HRA</span> card</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-link" style="text-decoration: none; font-weight: 500; font-size: 16px; line-height: 22px; color: var(--gray-900); text-align: left; padding: 0;">
+                <span style="border-bottom: 1px solid var(--gray-900); padding-bottom: 1px;">Add bank account instead</span>
+              </button>
+
+              <div style="font-size: 13px; line-height: 16px; color: #717171;">
+                By selecting <b style="color: #717171; font-weight: 500;">Confirm booking</b>, I have reviewed and agree to <a href="#" style="color: #717171; text-decoration: underline;">Headway's privacy practice</a>, <a href="#" style="color: #717171; text-decoration: underline;">assignment of benefits and financial responsibility,</a> and <a href="#" style="color: #717171; text-decoration: underline;">payment terms.</a>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                <button class="btn-primary" style="width: 100%; height: 44px; border-radius: 4px; background: #212326;">Confirm booking</button>
+                <div style="font-size: 15px; line-height: 20px; color: var(--gray-900); text-align: center;">You won't be charged yet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div class="flow-step-divider">↓</div>
 
       <h2 style="margin-top: 0;">Step 4 — Confirmation</h2>
 
-      <div class="flow-placeholder">
-        <h3>Confirmation screen placeholder</h3>
-        <p>Send me the Figma node URL for the Confirmation/Success step and I'll build it in the Agora Checkout 2.0 layout.</p>
-      </div>
+      <section class="state-block" id="flow-confirmation-booked">
+        <div class="state-header">
+          <div class="state-title"><h3>CONFIRMATION — Appointment booked</h3><span class="status-badge status-done">Already in Agora</span></div>
+          <p class="state-desc">Agora path. Appointment created successfully. Patient lands here immediately after <code>Confirm booking</code>.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span><code>web/apps/patient/components/BookAppointmentFlow/BookAppointmentSuccess.tsx</code></span></li>
+            <li><strong>Target</strong><span><code>web/apps/patient/components/UnifiedCheckout/steps/SuccessStep.tsx</code> — currently wraps the existing component</span></li>
+            <li><strong>Sub-components</strong><span><code>AddToCalendarButtons</code>, <code>TaskCarousel</code> + <code>TaskCard</code>, <code>SendNewMessageForm</code>, <code>SourceAttributionForm</code></span></li>
+            <li><strong>Task sources</strong><span>IDV task from <code>usePatientIdvrAccountConfirmationAccess</code> (gated on <code>KNOW_YOUR_CUSTOMER_BETA_LAUNCH</code> + <code>canPrescribe</code>); PROMs task from <code>hasAssessmentToComplete</code></span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Session with Georgia</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <div class="state-content">
+              <div class="state-text-group">
+                <div class="headline">You're ready to see Georgia on Headway</div>
+                <div class="body-17">We've let Georgia know your account is ready.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900);">Add to calendar</div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="calendar-btn"><span class="calendar-logo calendar-logo-google"></span>Google</button>
+                  <button class="calendar-btn"><span class="calendar-logo calendar-logo-apple"></span>Apple</button>
+                  <button class="calendar-btn"><span class="calendar-logo calendar-logo-outlook"></span>Outlook</button>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-size: 14px; line-height: 18px; font-weight: 500; color: var(--gray-900);">What would you like Georgia to know?</div>
+                <textarea class="input" rows="4" placeholder="What brings you here? Is there anything you're hoping for in your session?" style="width: 100%; resize: vertical; font-family: inherit; font-size: 16px; line-height: 22px; border-color: #DADCE0;"></textarea>
+                <button disabled style="width: 100%; background: var(--gray-200); color: var(--gray-800); cursor: not-allowed; border: none; border-radius: 4px; padding: 10px 16px; font-size: 14px; font-weight: 500; font-family: inherit;">Send private message to Georgia</button>
+              </div>
+
+              <a href="#" style="align-self: center; color: var(--gray-900); text-decoration: none; border-bottom: 1px solid #BEBEBE; padding-bottom: 1px; font-size: 15px; font-weight: 500;">Go to care portal</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="state-block" id="flow-confirmation-setup">
+        <div class="state-header">
+          <div class="state-title"><h3>CONFIRMATION — Ready to book (no appointment)</h3><span class="rpo-tag">RPO / PSP</span></div>
+          <p class="state-desc">Deferred flow. Patient finished account + insurance + payment setup but has no appointment time yet. Headway notifies the provider; patient is directed to the care portal to reach out and book.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">Design direction</div>
+          <ul class="impl-notes-list">
+            <li><strong>Trigger</strong><span><code>entryPoint === 'RPO'</code> or <code>'PSP'</code> AND no <code>providerEvent</code> created — finishing <code>completePatientOnboarding</code> without a scheduled appointment</span></li>
+            <li><strong>Remove vs. Agora success</strong><span>Add-to-calendar buttons, IDV task carousel, send-message form, source attribution form</span></li>
+            <li><strong>Primary CTA</strong><span>Single <code>Go to care portal</code> button — link to <code>/account</code></span></li>
+            <li><strong>Provider notification</strong><span>Backend should notify the referring provider that the patient's account is ready (separate from the patient-facing email)</span></li>
+            <li><strong>Target</strong><span>New <code>SuccessStep</code> variant for deferred flows in <code>UnifiedCheckout/steps/SuccessStep.tsx</code></span></li>
+          </ul>
+        </div>
+        <div class="agora-wrap">
+          <div class="agora-left">
+            <div class="agora-left-overlay">
+              <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+              <div class="appt-card-wrap">
+                <div class="appt-card-psp">
+                  <div class="psp-header">
+                    <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                    <div class="psp-info">
+                      <div class="psp-provider-name">Georgia Brown</div>
+                      <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                      <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                  <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agora-right">
+            <div class="state-content">
+              <div class="state-text-group">
+                <div class="headline" style="font-size: 32px; line-height: 38px;">You're ready to book an appointment with Georgia</div>
+                <div class="body-17">We've let Georgia know your account is ready. Reach out to them directly to book your next appointment.</div>
+              </div>
+
+              <div class="btn-stack">
+                <button class="btn-primary" style="width: 100%;">Go to care portal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </main>
   </div>
 </div>
 
-<div class="tab-content active" id="tab-insurance">
+<div class="tab-content" id="tab-appointment-card">
+  <div class="preview-page">
+    <main class="main-content" style="flex: 1;">
+
+      <div class="state-block">
+        <div class="flow-intro">
+          <div class="headline" style="margin-bottom: 16px;">Appointment card — three variants</div>
+          <p class="body-17" style="color: var(--gray-800); max-width: 620px;">
+            The left-side card in the checkout layout adapts to the patient's entry channel and booking status. Uses the same shell (cream <code>#FFFFF7</code>, 6px radius, 20px padding, 90px circular photo) with different body content.
+          </p>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 0;">1. Agora (self-serve) — appointment not booked</h2>
+
+      <section class="state-block">
+        <div class="state-header">
+          <div class="state-title"><h3>STANDARD — HWS / Agora checkout</h3><span class="status-badge status-done">Already in Agora</span></div>
+          <p class="state-desc">Patient searched Headway and is completing their own checkout. Shows the appointment they're about to book, plus payment timing and cancellation policy.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span><code>web/packages/ui/components/AppointmentDetailsCard/AppointmentDetailsCard.tsx</code></span></li>
+            <li><strong>Used in</strong><span><code>BookAppointmentCheckout.tsx</code> (desktop-hidden on the right column, desktop-visible in the left panel) during self-serve checkout</span></li>
+            <li><strong>Variant props</strong><span><code>variant="default"</code> + <code>showPaymentDetails</code></span></li>
+          </ul>
+        </div>
+        <div style="padding: 40px; display: flex; justify-content: center; background: linear-gradient(135deg, #F4E8D9 0%, #E8D9C4 100%);">
+          <div class="appt-card-psp">
+            <div class="psp-header">
+              <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+              <div class="psp-info">
+                <div class="psp-provider-name">Session with Georgia</div>
+                <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+              </div>
+            </div>
+            <div class="appt-card-payment-grid" style="padding-top: 4px;">
+              <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
+              <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2>2. PSP welcome — appointment not booked</h2>
+
+      <section class="state-block">
+        <div class="state-header">
+          <div class="state-title"><h3>WELCOME — PSP / Provider-ported</h3><span class="rpo-tag">RPO / PSP</span></div>
+          <p class="state-desc">Patient was invited by their provider. No appointment time exists yet — the card introduces the provider with a personalized welcome message to motivate account setup.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span>Not yet built in the unified checkout — needs a new component.</span></li>
+            <li><strong>Target</strong><span>Render in <code>UnifiedCheckout/display/CheckoutLayout.tsx</code> left column when <code>entryPoint === 'PSP'</code> AND no <code>providerEvent</code> scheduled</span></li>
+            <li><strong>Data source</strong><span>Provider's welcome blurb (new <code>providerWelcomeMessage</code> field?) + provider name/title/photo from <code>onboardingInfo.provider</code></span></li>
+          </ul>
+        </div>
+        <div style="padding: 40px; display: flex; justify-content: center; background: linear-gradient(135deg, #F4E8D9 0%, #E8D9C4 100%);">
+          <div class="appt-card-psp">
+            <div class="psp-header">
+              <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+              <div class="psp-info">
+                <div class="psp-provider-name">Georgia Brown</div>
+                <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+              </div>
+            </div>
+            <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
+          </div>
+        </div>
+      </section>
+
+      <h2>3. RPO — appointment booked by referrer</h2>
+
+      <section class="state-block">
+        <div class="state-header">
+          <div class="state-title"><h3>BOOKED — RPO / Referring Provider</h3><span class="rpo-tag">RPO</span></div>
+          <p class="state-desc">Referrer scheduled the appointment on the patient's behalf. Shows confirmed date/time + provider message. No "Free cancellation" row since the provider manages rescheduling via the referral portal, not self-serve.</p>
+        </div>
+        <div class="impl-notes">
+          <div class="impl-notes-title">In the codebase</div>
+          <ul class="impl-notes-list">
+            <li><strong>Source</strong><span>New variant — combines appointment info with provider welcome message.</span></li>
+            <li><strong>Target</strong><span><code>UnifiedCheckout/display/CheckoutLayout.tsx</code> left column when <code>isDeferredVerification</code> AND <code>providerEvent</code> exists with a scheduled start time</span></li>
+            <li><strong>Data source</strong><span><code>providerEvent.startDatetime</code> + <code>providerEvent.channel</code> (telehealth vs in-person) + provider's welcome blurb</span></li>
+            <li><strong>Why no cancellation info</strong><span>Referrer-booked appointments are managed through the referral workflow; self-serve cancellation would bypass the provider's schedule coordination</span></li>
+          </ul>
+        </div>
+        <div style="padding: 40px; display: flex; justify-content: center; background: linear-gradient(135deg, #F4E8D9 0%, #E8D9C4 100%);">
+          <div class="appt-card-psp">
+            <div class="psp-header">
+              <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+              <div class="psp-info">
+                <div class="psp-provider-name">Session with Georgia</div>
+                <div class="psp-video-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm–8:30pm</div>
+                <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+              </div>
+            </div>
+            <div class="psp-message">Hi John, excited for our first session! Please set up your Headway account so we're all set for your appointment. It just takes a few minutes. — Georgia</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-insurance">
 <div class="preview-page">
 
   <aside class="nav-sidebar">
@@ -748,16 +1230,20 @@
             <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
             <div class="appt-card-wrap">
               <div class="appt-card-psp">
-                <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
-                <div class="psp-provider-name">Georgia</div>
-                <div class="psp-provider-title">MD</div>
-                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
+                <div class="psp-header">
+                  <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                  <div class="psp-info">
+                    <div class="psp-provider-name">Georgia Brown</div>
+                    <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                    <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                  </div>
+                </div>
+                <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
               </div>
             </div>
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -852,16 +1338,20 @@
             <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
             <div class="appt-card-wrap">
               <div class="appt-card-psp">
-                <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
-                <div class="psp-provider-name">Georgia</div>
-                <div class="psp-provider-title">MD</div>
-                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
+                <div class="psp-header">
+                  <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                  <div class="psp-info">
+                    <div class="psp-provider-name">Georgia Brown</div>
+                    <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                    <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                  </div>
+                </div>
+                <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
               </div>
             </div>
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -928,16 +1418,20 @@
             <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
             <div class="appt-card-wrap">
               <div class="appt-card-psp">
-                <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
-                <div class="psp-provider-name">Georgia</div>
-                <div class="psp-provider-title">MD</div>
-                <div class="psp-message">Welcome to Headway — this is a platform I use to manage my clients, appointments, billing and insurance. I'm looking forward to seeing you!</div>
+                <div class="psp-header">
+                  <div class="psp-provider-photo"><img src="icons/georgia.png" alt="Georgia" /></div>
+                  <div class="psp-info">
+                    <div class="psp-provider-name">Georgia Brown</div>
+                    <div class="psp-provider-title">Psychiatric Mental Health NP</div>
+                    <div class="psp-video-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                  </div>
+                </div>
+                <div class="psp-message">Hi John, I use Headway to make scheduling and billing easier for both of us. Set up your account and you'll be able to book appointments, see your insurance coverage, and manage everything in one place. — Georgia</div>
               </div>
             </div>
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -985,7 +1479,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1010,7 +1504,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step">
               <div class="progress-circle progress-completed">✓</div>
@@ -1082,7 +1575,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1095,7 +1588,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1140,7 +1632,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1153,7 +1645,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1200,7 +1691,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1213,7 +1704,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1261,7 +1751,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1280,7 +1770,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1326,7 +1815,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1339,7 +1828,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1382,7 +1870,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Ongoing care with Georgia</div>
                     <div class="appt-card-rows">
@@ -1395,7 +1883,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1432,7 +1919,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1445,7 +1932,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1481,7 +1967,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1494,7 +1980,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1559,7 +2044,7 @@
             <div class="appt-card-wrap">
               <div class="appt-card-branded">
                 <div class="appt-card-top">
-                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-avatar"><img src="icons/georgia.png" alt="Georgia" /></div>
                   <div class="appt-card-info">
                     <div class="appt-card-title">Session with Georgia</div>
                     <div class="appt-card-rows">
@@ -1572,7 +2057,6 @@
           </div>
         </div>
         <div class="agora-right">
-          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
           <div class="progress-bar">
             <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
             <div class="progress-line"></div>
@@ -1729,6 +2213,16 @@
       btn.classList.add('active');
       document.getElementById('tab-' + tabId).classList.add('active');
       window.scrollTo(0, 0);
+    });
+  });
+
+  document.querySelectorAll('.flow-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.flow-toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = document.getElementById('tab-flow');
+      if (btn.dataset.flow === 'booked') tab.classList.add('booked');
+      else tab.classList.remove('booked');
     });
   });
 </script>
