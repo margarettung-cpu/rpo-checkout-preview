@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RPO Insurance States — Agora Checkout 2.0</title>
+<style>
+  /* Real Helix fonts */
+  @font-face {
+    font-family: 'VC Honey';
+    src: url('fonts/VCHoney-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Post Grotesk';
+    src: url('fonts/PostGrotesk-Book.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Post Grotesk';
+    src: url('fonts/PostGrotesk-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Post Grotesk';
+    src: url('fonts/PostGrotesk-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --beige-100: #FFFFF7;
+    --beige-300: #FCEFC5;
+    --green-100: #E7F7F0;
+    --green-200: #D0EEE0;
+    --green-600: #128756;
+    --green-800: #0B663D;
+    --gray-100: #FFFFFF;
+    --gray-200: #F8F8F8;
+    --gray-400: #EBEBEB;
+    --gray-500: #DADCE0;
+    --gray-800: #717171;
+    --gray-900: #353535;
+    --gray-1000: #212326;
+    --blue-100: #E8F3FF;
+    --blue-300: #A2D0FE;
+    --blue-500: #45A1FD;
+    --red-bg: #FDECEA;
+    --red-border: #A8231C;
+    --warning-bg: #FFF8E1;
+    --warning-border: #9A6700;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Post Grotesk', system-ui, -apple-system, sans-serif;
+    color: var(--gray-900);
+    background: var(--gray-200);
+    font-size: 17px;
+    line-height: 22px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Typography — real Helix fonts */
+  .headline { font-family: 'VC Honey', serif; font-size: 44px; line-height: 52px; font-weight: 400; letter-spacing: -0.88px; }
+  .headline-sm { font-family: 'VC Honey', serif; font-size: 28px; line-height: 36px; font-weight: 400; letter-spacing: -0.56px; }
+  .body-17 { font-size: 17px; line-height: 22px; font-weight: 400; }
+  .body-17-m { font-size: 17px; line-height: 22px; font-weight: 500; }
+  .body-16 { font-size: 16px; line-height: 22px; font-weight: 400; }
+  .body-16-m { font-size: 16px; line-height: 22px; font-weight: 500; }
+  .sub-15-m { font-size: 15px; line-height: 20px; font-weight: 500; }
+  .sub-15 { font-size: 15px; line-height: 20px; font-weight: 400; }
+  .caption { font-size: 13px; line-height: 16px; font-weight: 400; }
+  .caption-m { font-size: 13px; line-height: 16px; font-weight: 500; }
+
+  /* Buttons — Agora 2.0 spec: black primary, bordered secondary, full-width */
+  .btn-primary {
+    background: var(--gray-1000); color: white;
+    padding: 14px 24px; border-radius: 6px;
+    font-weight: 500; border: none; cursor: pointer;
+    font-size: 16px; font-family: inherit;
+    width: 100%;
+  }
+  .btn-primary:hover { background: #000; }
+  .btn-secondary {
+    background: white; color: var(--gray-1000);
+    padding: 14px 24px; border-radius: 6px;
+    font-weight: 500; border: 1px solid var(--gray-1000);
+    cursor: pointer; font-size: 16px; font-family: inherit;
+    width: 100%;
+  }
+  .btn-link {
+    background: none; color: var(--gray-900); border: none;
+    cursor: pointer; text-decoration: underline; font-weight: 400;
+    padding: 0; font-size: 16px; font-family: inherit;
+  }
+  .btn-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  /* Cards */
+  .card { background: var(--gray-100); border: 1px solid var(--gray-500); border-radius: 6px; padding: 20px; }
+  .radio-card { border: 1px solid var(--gray-500); border-radius: 6px; padding: 16px; background: white; cursor: pointer; }
+  .radio-card-selected { border: 2px solid var(--green-800); background: var(--green-100); padding: 15px; }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+  .badge-positive { background: var(--green-100); color: var(--green-800); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-border); }
+  .badge-error { background: var(--red-bg); color: var(--red-border); }
+  .badge-neutral { background: var(--gray-200); color: var(--gray-800); }
+  .rpo-tag { display: inline-block; background: #8A3FFC; color: white; font-size: 10px; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+
+  /* Migration status badges */
+  .status-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.4px; white-space: nowrap;
+  }
+  .status-done { background: var(--green-100); color: var(--green-800); }
+  .status-scaffold { background: var(--warning-bg); color: var(--warning-border); }
+  .status-design { background: var(--red-bg); color: var(--red-border); }
+
+  /* Implementation notes card (for RPO-only states) */
+  .impl-notes {
+    background: #F4F0FB;
+    border: 1px solid #D4C2EE;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0 24px 24px;
+  }
+  .impl-notes-title {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #6B3FCE; margin-bottom: 10px;
+  }
+  .impl-notes-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .impl-notes-list li {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; line-height: 18px; color: var(--gray-900);
+  }
+  .impl-notes-list li strong {
+    min-width: 140px; flex-shrink: 0; color: #4A2A8E;
+    font-weight: 600; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.3px; padding-top: 1px;
+  }
+  .impl-notes-list li code {
+    background: white; padding: 1px 6px; border-radius: 3px;
+    font-family: ui-monospace, monospace; font-size: 12px;
+    color: var(--gray-1000); border: 1px solid #D4C2EE;
+  }
+  .impl-notes-list li .tag-missing {
+    background: var(--red-bg); color: var(--red-border);
+    font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.3px; margin-left: 6px;
+  }
+
+  /* Migration overview section */
+  .migration-context {
+    background: var(--gray-200); border-radius: 8px; padding: 20px 24px;
+    margin: 20px 0 24px; border-left: 3px solid var(--green-800);
+  }
+  .migration-context p { margin: 0; font-size: 15px; line-height: 22px; color: var(--gray-900); }
+  .migration-context p + p { margin-top: 8px; }
+  .migration-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .migration-stat {
+    padding: 16px 20px; border-radius: 8px; border: 1px solid var(--gray-500);
+  }
+  .migration-stat .num { font-family: 'VC Honey', serif; font-size: 40px; line-height: 44px; }
+  .migration-stat .label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 6px; }
+  .migration-stat.done { background: var(--green-100); border-color: var(--green-600); }
+  .migration-stat.done .label { color: var(--green-800); }
+  .migration-stat.scaffold { background: var(--warning-bg); border-color: var(--warning-border); }
+  .migration-stat.scaffold .label { color: var(--warning-border); }
+  .migration-stat.design { background: var(--red-bg); border-color: var(--red-border); }
+  .migration-stat.design .label { color: var(--red-border); }
+  .migration-links { display: flex; gap: 16px; margin-top: 16px; font-size: 14px; flex-wrap: wrap; }
+  .migration-links a { color: var(--green-800); text-decoration: underline; }
+
+  /* Guidance cards */
+  .guidance-error { background: var(--red-bg); border-left: 4px solid var(--red-border); padding: 16px; border-radius: 6px; }
+  .guidance-warning { background: var(--warning-bg); border-left: 4px solid var(--warning-border); padding: 16px; border-radius: 6px; }
+
+  /* Inputs */
+  .input { border: 1px solid var(--gray-500); padding: 12px 14px; border-radius: 6px; width: 100%; background: white; font-size: 16px; font-family: inherit; color: var(--gray-900); }
+  .input-error { border-color: var(--red-border); }
+  .label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--gray-900); }
+  .field-error { font-size: 13px; color: var(--red-border); margin-top: 4px; }
+
+  /* Page layout */
+  .preview-page { max-width: 1440px; margin: 0 auto; display: flex; gap: 32px; padding: 24px; align-items: flex-start; }
+  .nav-sidebar { width: 220px; flex-shrink: 0; position: sticky; top: 24px; background: white; border-radius: 8px; border: 1px solid var(--gray-500); padding: 12px; max-height: calc(100vh - 48px); overflow-y: auto; }
+  .main-content { flex: 1; min-width: 0; }
+  .nav-section { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-800); padding: 12px 8px 4px; font-weight: 600; }
+  .nav-link { display: block; padding: 6px 10px; border-radius: 6px; color: var(--gray-800); font-size: 13px; text-decoration: none; margin: 1px 0; }
+  .nav-link:hover { background: var(--gray-200); color: var(--gray-900); }
+
+  /* State block */
+  .state-block { background: white; border-radius: 12px; margin-bottom: 24px; overflow: hidden; border: 1px solid var(--gray-500); scroll-margin-top: 16px; }
+  .state-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-500); background: var(--gray-200); }
+  .state-title { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .state-title h3 { margin: 0; font-size: 18px; font-weight: 600; }
+  .state-desc { font-size: 14px; color: var(--gray-800); margin: 0; }
+
+  /* Agora two-column layout — Figma spec: 50/50 split */
+  .agora-wrap { display: grid; grid-template-columns: 1fr; min-height: 720px; }
+  @media (min-width: 900px) {
+    .agora-wrap { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* LEFT: photo with overlay */
+  .agora-left {
+    position: relative;
+    background-image: url('therapy-session.webp');
+    background-size: cover;
+    background-position: center;
+    min-height: 720px;
+    overflow: hidden;
+  }
+  .agora-left-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding: 56px 64px;
+  }
+  .headway-logo-img {
+    width: 135px;
+    height: 28px;
+  }
+  .headway-logo-img img { width: 100%; height: 100%; }
+
+  .icon-20 { width: 20px; height: 20px; flex-shrink: 0; display: inline-block; }
+  .icon-20 img { width: 100%; height: 100%; }
+  .icon-24 { width: 24px; height: 24px; flex-shrink: 0; display: inline-block; }
+  .icon-24 img { width: 100%; height: 100%; }
+  .appt-card-wrap {
+    flex: 1; display: flex;
+    align-items: center; justify-content: center;
+  }
+
+  /* Branded appointment card */
+  .appt-card-branded {
+    background: var(--beige-100);
+    border-radius: 6px;
+    padding: 20px;
+    width: 100%;
+    max-width: 460px;
+    display: flex; flex-direction: column; gap: 12px;
+    align-items: center;
+  }
+  .appt-card-top { display: flex; gap: 16px; align-items: center; align-self: stretch; }
+  .appt-card-avatar {
+    width: 90px; height: 90px; border-radius: 77px;
+    background: linear-gradient(135deg, #d4a574, #a88569);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: 'Fraunces', serif; font-size: 32px; font-weight: 400;
+  }
+  .appt-card-info { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .appt-card-title { font-size: 15px; line-height: 20px; font-weight: 500; color: var(--gray-900); }
+  .appt-card-rows { display: flex; flex-direction: column; gap: 4px; }
+  .appt-card-row { display: flex; align-items: center; gap: 9px; font-size: 15px; line-height: 20px; color: var(--gray-900); }
+  .appt-card-row-icon { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+  .appt-card-divider { height: 1px; background: var(--beige-300); border: none; margin: 0; width: 420px; max-width: 100%; }
+  .appt-card-payment-grid { display: flex; gap: 40px; align-items: flex-start; justify-content: center; }
+  .appt-card-payment-detail {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    max-width: 180px; text-align: center;
+  }
+  .appt-card-payment-detail .caption { color: var(--gray-900); }
+
+  /* RIGHT: content pane */
+  .agora-right {
+    padding: 60px 80px; background: white;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  @media (max-width: 899px) {
+    .agora-left { display: none; }
+    .agora-right { padding: 32px 24px; }
+  }
+
+  /* Back button — Figma spec */
+  .back-button {
+    display: flex; align-items: center; gap: 4px;
+    color: var(--gray-900); font-size: 17px; font-weight: 500;
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: inherit;
+  }
+  .chevron-left { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; color: var(--gray-900); }
+
+  /* Progress bar — Figma spec */
+  .progress-bar {
+    display: flex; align-items: center; gap: 16px;
+    padding-bottom: 48px;
+    width: 100%;
+  }
+  .progress-step { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .progress-circle {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; flex-shrink: 0;
+  }
+  .progress-completed {
+    background: var(--green-200); color: var(--green-600);
+  }
+  .progress-active {
+    background: var(--green-200); color: var(--green-600);
+  }
+  .progress-pending {
+    border: 1px solid var(--gray-800); color: var(--gray-900); background: white;
+  }
+  .progress-line { flex: 1; height: 1px; background: var(--gray-500); min-width: 20px; margin-top: 0; }
+  .progress-label { font-size: 16px; line-height: 22px; color: var(--gray-900); font-family: inherit; }
+  .progress-label-active { font-weight: 500; }
+  .progress-label-pending { font-weight: 400; }
+
+  /* Main content area */
+  .state-content { display: flex; flex-direction: column; gap: 32px; }
+  .state-text-group { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
+
+  /* File upload — Figma spec */
+  .file-uploader { display: flex; flex-direction: column; gap: 4px; }
+  .file-upload-label { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+  .file-upload-area {
+    background: white;
+    border: 1px solid var(--gray-500);
+    border-radius: 4px;
+    padding: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .file-upload-inner {
+    background: var(--gray-200); border-radius: 2px;
+    padding: 24px; display: flex; flex-direction: column;
+    gap: 8px; align-items: center; justify-content: center;
+    flex: 1; width: 100%;
+  }
+  .file-upload-placeholder {
+    width: 132px; height: 80px; border-radius: 6px; overflow: hidden;
+    flex-shrink: 0;
+  }
+  .file-upload-placeholder img { display: block; width: 100%; height: 100%; }
+  .file-upload-cta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 16px; color: var(--gray-900);
+  }
+  .file-upload-cta a {
+    color: var(--gray-900); text-decoration: underline;
+  }
+  .upload-icon-20 { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .upload-icon-20 img { width: 100%; height: 100%; }
+
+  /* Reassurance footer */
+  .reassurance {
+    display: flex; flex-direction: column; gap: 10px;
+    align-items: center; text-align: center;
+    padding: 20px 0 0; border-top: 1px solid var(--gray-500);
+    margin-top: 8px;
+  }
+
+  /* When block — placed at top of each state, right under the header */
+  .when-block { background: var(--gray-200); padding: 12px 16px; border-radius: 6px; font-size: 13px; color: var(--gray-800); margin: 16px 24px 16px; border-left: 3px solid var(--gray-500); }
+  .when-block strong { color: var(--gray-900); }
+  .when-block code { background: white; padding: 1px 6px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 12px; }
+
+  /* Header */
+  .top-header { background: white; border-bottom: 1px solid var(--gray-500); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  .stat-card { background: var(--gray-200); padding: 20px; border-radius: 8px; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 36px; line-height: 40px; }
+  .stat-label { font-size: 13px; color: var(--gray-800); margin-top: 4px; }
+
+  h1 { font-family: 'Fraunces', serif; font-weight: 400; margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 400; margin: 48px 0 24px; font-size: 32px; }
+
+  .modal-overlay { background: rgba(0,0,0,0.4); padding: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; }
+  .modal { background: white; border-radius: 8px; padding: 32px; max-width: 440px; width: 100%; }
+
+  .radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--gray-500); background: white; flex-shrink: 0; margin-top: 2px; }
+  .radio-dot-selected { border-color: var(--green-800); background: var(--green-800); display: flex; align-items: center; justify-content: center; }
+  .radio-dot-selected::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: white; }
+
+  .insurance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; font-size: 14px; color: var(--gray-900); margin-top: 12px; }
+  .insurance-grid .label-small { color: var(--gray-800); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div>
+    <h1 style="font-size: 20px; line-height: 24px;">RPO Insurance States</h1>
+    <p class="caption" style="margin: 2px 0 0; color: var(--gray-800);">Rendered in Agora Checkout 2.0 layout — every state with stepper</p>
+  </div>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span class="rpo-tag">RPO-only</span>
+    <span class="caption" style="color: var(--gray-800);">= unique to invited/referred patient flow</span>
+  </div>
+</header>
+
+<div class="preview-page">
+
+  <aside class="nav-sidebar">
+    <div class="nav-section">1. To build (RPO-only)</div>
+    <a href="#reconcile" class="nav-link">Reconcile insurances</a>
+    <a href="#pending" class="nav-link">Pending insurance</a>
+    <a href="#confirm-billing" class="nav-link">Confirm billing method</a>
+
+    <div class="nav-section">2. Already in Agora</div>
+    <a href="#lookup" class="nav-link">Lookup</a>
+    <a href="#address" class="nav-link">Address</a>
+    <a href="#image-medicare" class="nav-link">Image upload — Medicare</a>
+    <a href="#image-experiment" class="nav-link">Image upload — Experiment</a>
+    <a href="#complete-verified" class="nav-link">Complete — Verified</a>
+    <a href="#complete-outage" class="nav-link">Complete — Outage</a>
+    <a href="#complete-selfpay" class="nav-link">Complete — Self-pay</a>
+
+    <div class="nav-section">3. Lookup errors</div>
+    <a href="#error-oon" class="nav-link">Out of network</a>
+    <a href="#error-failed" class="nav-link">Lookup failed</a>
+    <a href="#error-fuzzy" class="nav-link">Fuzzy match modal</a>
+    <a href="#error-manual" class="nav-link">Manual verification</a>
+
+    <div class="nav-section">4. Alert banners</div>
+    <a href="#banner-referral" class="nav-link">Referral required</a>
+    <a href="#banner-terminated" class="nav-link">Plan terminated</a>
+    <a href="#banner-no-mh" class="nav-link">No mental health</a>
+    <a href="#banner-no-sessions" class="nav-link">No sessions left</a>
+    <a href="#banner-approaching" class="nav-link">Approaching limit</a>
+    <a href="#banner-outage" class="nav-link">System outage</a>
+
+    <div class="nav-section">5. Secondary insurance</div>
+    <a href="#secondary-oon" class="nav-link">Secondary OON</a>
+    <a href="#secondary-swap" class="nav-link">Detected as secondary</a>
+
+    <div class="nav-section">6. Subscriber/Dependent</div>
+    <a href="#sub-dep" class="nav-link">Role mismatch</a>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="state-block">
+      <div style="padding: 32px;">
+        <div class="headline" style="margin-bottom: 16px;">RPO → Agora migration: insurance states</div>
+        <p class="body-17" style="color: var(--gray-800); max-width: 620px;">
+          Migrating the RPO (invited/referred patient) onboarding experience into the unified Agora checkout. Most insurance states already work in Agora today via shared components. This doc focuses on the <b>gap</b> — the RPO-specific states that need to be built into the unified <code>InsuranceStep</code>.
+        </p>
+
+        <div class="migration-context">
+          <p><b>Where things stand:</b> Jesse Dawson's draft PR #54774 built the unified checkout scaffold with entry points, registry-based step sequencing, and a <code>DeferredCheckoutEntry</code> that detects <code>isDeferredVerification</code> from the provider event channel. The <code>InsuranceStep</code> component has display-state enums for <code>RECONCILE_INSURANCES</code> and <code>PENDING_INSURANCE</code>, but the actual card UI is placeholder text.</p>
+          <p><b>Gap:</b> Build the reconciliation + pending confirmation card UI, port <code>useInsuranceAndContactInfoQuery</code> into the unified flow's adapter, and design + build the self-pay <code>CONFIRM_BILLING_METHOD</code> step.</p>
+        </div>
+
+        <div class="migration-stat-row">
+          <div class="migration-stat done">
+            <div class="num">16</div>
+            <div class="label">Already in Agora</div>
+            <div class="caption" style="margin-top: 6px; color: var(--gray-800);">Works today via shared component</div>
+          </div>
+          <div class="migration-stat scaffold">
+            <div class="num">3</div>
+            <div class="label">Scaffold built</div>
+            <div class="caption" style="margin-top: 6px; color: var(--gray-800);">Enum exists, UI needs completion</div>
+          </div>
+          <div class="migration-stat design">
+            <div class="num">1</div>
+            <div class="label">Needs design</div>
+            <div class="caption" style="margin-top: 6px; color: var(--gray-800);">No Figma yet</div>
+          </div>
+        </div>
+
+        <div class="migration-links">
+          <a href="https://github.com/headway/headway/pull/54774" target="_blank">PR #54774 — UnifiedCheckout dry-run</a>
+          <span style="color: var(--gray-800);">•</span>
+          <span style="color: var(--gray-800);">Plan: <code>web/apps/patient/components/UnifiedCheckout/docs/plan.md</code></span>
+        </div>
+      </div>
+    </div>
+
+    
+    <h2>1. States to build (RPO-only)</h2>
+    <p class="body-16" style="color: var(--gray-800); max-width: 620px; margin-bottom: 16px; margin-top: -12px;">These states exist today in the RPO onboarding flow but need to be built into the unified Agora checkout. All three are unique to the invited/referred patient experience.</p>
+<!-- RECONCILE -->
+    <section id="reconcile" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>RECONCILE_INSURANCES</h3><span class="rpo-tag">RPO-only</span><span class="status-badge status-scaffold">Scaffold built</span></div>
+        <p class="state-desc">Patient has insurance on file AND the referrer entered different insurance.</p>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Deferred verification active (channel = <code>REFERRALS_PORTAL</code> or <code>ADMIN_PORTAL</code>) AND both <code>activeUserInsurance</code> AND <code>pendingUserInsurance</code> exist.
+      </div>
+      <div class="impl-notes">
+        <div class="impl-notes-title">Build in Agora</div>
+        <ul class="impl-notes-list">
+          <li><strong>Status</strong><span>Scaffold placeholder at <code>InsuranceStep.tsx</code> — shows text + 2 buttons, no card UI yet</span></li>
+          <li><strong>Target</strong><span><code>web/apps/patient/components/UnifiedCheckout/steps/InsuranceStep.tsx</code> — <code>RECONCILE_INSURANCES</code> display state</span></li>
+          <li><strong>Data source</strong><span><code>useInsuranceAndContactInfoQuery(providerEventId)</code><span class="tag-missing">Not ported</span></span></li>
+          <li><strong>Port from</strong><span><code>PatientOnboarding/TaskRow/components/ReconcileInsurancesStep.tsx</code></span></li>
+          <li><strong>Dependencies</strong><span><code>DeferredApiAdapter</code> needs a <code>getInsuranceAndContactInfo</code> method; existing <code>InsuranceCardDetails</code> + <code>attachAndActivateMutation</code> can be reused</span></li>
+          <li><strong>Trigger</strong><span><code>isDeferredVerification === true</code> AND both <code>activeUserInsurance</code> AND <code>pendingUserInsurance</code> exist (detected in <code>DeferredCheckoutEntry.tsx:174-182</code>)</span></li>
+        </ul>
+      </div>
+      <div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+</div>
+                </div>
+                <hr class="appt-card-divider" />
+                <div class="appt-card-payment-grid">
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Which primary insurance plan is correct?</div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div class="radio-card radio-card-selected">
+                <div style="display: flex; gap: 12px;">
+                  <div class="radio-dot radio-dot-selected"></div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                      <span class="body-16-m">Blue Cross Blue Shield</span>
+                      <span class="badge badge-positive">In-network</span>
+                      <span class="badge badge-neutral">Primary</span>
+                    </div>
+                    <div class="insurance-grid">
+                      <div><div class="label-small">Member name</div>Sarah Jones</div>
+                      <div><div class="label-small">Member ID</div>PENDING456</div>
+                      <div><div class="label-small">Plan type</div>PPO</div>
+                      <div><div class="label-small">Group number</div>GRP-2024</div>
+                    </div>
+                    <div class="caption" style="color: var(--gray-800); margin-top: 12px;">Added by your referrer at Mount Sinai</div>
+                    <button class="btn-link" style="margin-top: 8px;">Edit insurance</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="radio-card">
+                <div style="display: flex; gap: 12px;">
+                  <div class="radio-dot"></div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                      <span class="body-16-m">Aetna</span>
+                      <span class="badge badge-positive">In-network</span>
+                      <span class="badge badge-neutral">Primary</span>
+                    </div>
+                    <div class="insurance-grid">
+                      <div><div class="label-small">Member name</div>Sarah Jones</div>
+                      <div><div class="label-small">Member ID</div>ACTIVE123</div>
+                      <div><div class="label-small">Plan type</div>HMO</div>
+                      <div><div class="label-small">Group number</div>GRP-9921</div>
+                    </div>
+                    <div class="caption" style="color: var(--gray-800); margin-top: 12px;">Found in your Headway account</div>
+                    <button class="btn-link" style="margin-top: 8px;">Edit insurance</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--gray-500); padding-top: 16px;">
+              <button class="btn-link">+ Add secondary insurance</button>
+            </div>
+
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+              <button class="btn-secondary">Add new insurance</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- PENDING -->
+    <section id="pending" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>PENDING_INSURANCE</h3><span class="rpo-tag">RPO-only</span><span class="status-badge status-scaffold">Scaffold built</span></div>
+        <p class="state-desc">Referrer entered insurance, patient has no prior Headway insurance.</p>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Deferred verification + only <code>pendingUserInsurance</code> exists (no prior Headway insurance).
+      </div>
+      <div class="impl-notes">
+        <div class="impl-notes-title">Build in Agora</div>
+        <ul class="impl-notes-list">
+          <li><strong>Status</strong><span>Scaffold placeholder at <code>InsuranceStep.tsx</code> — shows text + buttons, no insurance card rendered</span></li>
+          <li><strong>Target</strong><span><code>web/apps/patient/components/UnifiedCheckout/steps/InsuranceStep.tsx</code> — <code>PENDING_INSURANCE</code> display state</span></li>
+          <li><strong>Data source</strong><span><code>useInsuranceAndContactInfoQuery(providerEventId)</code><span class="tag-missing">Not ported</span></span></li>
+          <li><strong>Port from</strong><span><code>PatientOnboarding/TaskRow/components/PendingInsuranceStep.tsx</code></span></li>
+          <li><strong>Dependencies</strong><span>Same <code>DeferredApiAdapter</code> method as reconcile; single-card variant of <code>InsuranceCardDetails</code></span></li>
+          <li><strong>Trigger</strong><span><code>isDeferredVerification === true</code> AND only <code>pendingUserInsurance</code> exists (no prior Headway insurance)</span></li>
+        </ul>
+      </div>
+      <div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+</div>
+                </div>
+                <hr class="appt-card-divider" />
+                <div class="appt-card-payment-grid">
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Please confirm your insurance</div>
+
+            <div class="radio-card">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span class="body-16-m">Blue Cross Blue Shield</span>
+                <span class="badge badge-positive">In-network</span>
+                <span class="badge badge-neutral">Primary</span>
+              </div>
+              <div class="insurance-grid">
+                <div><div class="label-small">Member name</div>Sarah Jones</div>
+                <div><div class="label-small">Member ID</div>PENDING456</div>
+                <div><div class="label-small">Plan type</div>PPO</div>
+                <div><div class="label-small">Group number</div>GRP-2024</div>
+              </div>
+              <div class="caption" style="color: var(--gray-800); margin-top: 12px;">Added by your referrer at Mount Sinai</div>
+              <button class="btn-link" style="margin-top: 8px;">Edit insurance</button>
+            </div>
+
+            <div style="border-top: 1px solid var(--gray-500); padding-top: 16px;">
+              <button class="btn-link">+ Add secondary insurance</button>
+            </div>
+
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+              <button class="btn-secondary">Add new insurance instead</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- CONFIRM BILLING -->
+    <section id="confirm-billing" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>CONFIRM_BILLING_METHOD</h3><span class="rpo-tag">RPO-only</span><span class="status-badge status-design">Needs design</span></div>
+        <p class="state-desc">Ported patient set up for self-pay or off-platform billing.</p>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Ported patient with self-pay or off-platform billing, no insurance answer yet.
+      </div>
+      <div class="impl-notes">
+        <div class="impl-notes-title">Build in Agora</div>
+        <ul class="impl-notes-list">
+          <li><strong>Status</strong><span>Not in unified checkout; no Figma design yet</span></li>
+          <li><strong>Target</strong><span>New display state in <code>InsuranceStep.tsx</code> — e.g. <code>CONFIRM_BILLING_METHOD</code></span></li>
+          <li><strong>Data source</strong><span><code>onboardingInfo.billingSetup</code> — identifies self-pay / off-platform patients</span></li>
+          <li><strong>Port from</strong><span><code>PatientOnboarding/TaskRow/InsuranceTaskRow.tsx</code> (lines 373-378) — Yes/No flow + <code>onConfirmBillingMethod</code></span></li>
+          <li><strong>Dependencies</strong><span>Needs Figma before build; needs registry update to include this display state for ported-patient entry path</span></li>
+          <li><strong>Trigger</strong><span>Ported patient (<code>PatientOnboardingProviderPortedInfo</code>) set up for self-pay or off-platform billing, <code>hasInsurance === null</code>, no <code>activeUserInsurance</code></span></li>
+        </ul>
+      </div>
+      <div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Ongoing care with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/money.svg" alt="" /></span>$150 private pay</div>
+                    </div>
+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="state-text-group">
+              <div class="headline">How you'll pay</div>
+              <div class="body-17">You're set up to use <b>private pay</b>, meaning you'll pay <b>$150</b> for each session. You can still add insurance if you'd like us to verify your benefits.</div>
+            </div>
+            <div class="body-16-m">Do you have insurance?</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="radio-card"><div style="display: flex; gap: 12px; align-items: center;"><div class="radio-dot"></div><span class="body-16-m">Yes</span></div></div>
+              <div class="radio-card"><div style="display: flex; gap: 12px; align-items: center;"><div class="radio-dot"></div><span class="body-16-m">No</span></div></div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+
+    <h2>2. Already in Agora — Primary states</h2>
+    <p class="body-16" style="color: var(--gray-800); max-width: 620px; margin-bottom: 16px; margin-top: -12px;">These states already work in the self-serve Agora checkout via the shared <code>InsuranceLookupWorkflow</code> component. The RPO migration can reuse them directly.</p>
+
+
+    <!-- LOOKUP — matches Figma reference -->
+    <section id="lookup" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>LOOKUP</h3><span class="status-badge status-done">Already in Agora</span></div>
+        <p class="state-desc">Default entry. Patient uploads insurance card images (or enters manually).</p>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Task incomplete, no deferred verification, no blocking readiness issues.
+      </div>
+      <div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+</div>
+                </div>
+                <hr class="appt-card-divider" />
+                <div class="appt-card-payment-grid">
+                  <div class="appt-card-payment-detail">
+                    <div class="icon-20"><img src="icons/money.svg" alt="" /></div>
+                    <div class="caption">Book now, pay after session</div>
+                  </div>
+                  <div class="appt-card-payment-detail">
+                    <div class="icon-20"><img src="icons/armchair.svg" alt="" /></div>
+                    <div class="caption">Free cancellation until April 1, 7:30pm</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step">
+              <div class="progress-circle progress-completed">✓</div>
+              <span class="progress-label progress-label-pending">Account</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+              <div class="progress-circle progress-active">2</div>
+              <span class="progress-label progress-label-active">Insurance</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+              <div class="progress-circle progress-pending">3</div>
+              <span class="progress-label progress-label-pending">Payment</span>
+            </div>
+          </div>
+          <div class="state-content">
+            <div class="state-text-group">
+              <div class="headline">Katie, let us help estimate your cost</div>
+              <div class="body-17">Upload your insurance card images.</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="file-uploader">
+                <div class="file-upload-label">Front side of your insurance card</div>
+                <div class="file-upload-area">
+                  <div class="file-upload-inner">
+                    <div class="file-upload-placeholder"><img src="icons/card-front.svg" alt="" /></div>
+                    <div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="file-uploader">
+                <div class="file-upload-label">Back side of your insurance card</div>
+                <div class="file-upload-area">
+                  <div class="file-upload-inner">
+                    <div class="file-upload-placeholder"><img src="icons/card-back.svg" alt="" /></div>
+                    <div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+              <button class="btn-secondary">Enter manually instead</button>
+            </div>
+            <div class="reassurance">
+              <span class="icon-24"><img src="icons/seal-check.svg" alt="" /></span>
+              <div class="body-17" style="color: var(--gray-900); max-width: 335px;">Most of our patients find their final cost match our estimate.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- ADDRESS -->
+    <section id="address" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>ADDRESS</h3><span class="status-badge status-done">Already in Agora</span></div>
+        <p class="state-desc">Backend requires home address before verifying insurance.</p>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Backend returned <code>MISSING_ADDRESS</code> as blocking issue.
+      </div>
+      <div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="state-text-group">
+              <div class="headline">Your home address</div>
+              <div class="body-17">We need your home address associated with your insurance in order to verify your benefits and submit claims for your sessions.</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div><label class="label">Street address</label><input class="input" placeholder="123 Main St" /></div>
+              <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px;">
+                <div><label class="label">City</label><input class="input" /></div>
+                <div><label class="label">State</label><div class="input" style="color: var(--gray-800); display: flex; justify-content: space-between;"><span>—</span><span>▾</span></div></div>
+                <div><label class="label">ZIP</label><input class="input" /></div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- IMAGE UPLOAD MEDICARE -->
+    <section id="image-medicare" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>IMAGE_UPLOAD — Medicare/Medicaid</h3><span class="status-badge status-done">Already in Agora</span></div>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> <code>MISSING_INSURANCE_PHOTOS_FOR_MEDICAID_MEDICARE</code> blocking issue.
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="state-text-group">
+              <div class="headline">Upload your insurance card</div>
+              <div class="body-17">For Medicare and Medicaid appointments, we need photos of your insurance card. We'll use them to verify your benefits and submit claims for your sessions.</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="file-uploader">
+                <div class="file-upload-label">Front side of your insurance card</div>
+                <div class="file-upload-area"><div class="file-upload-inner"><div class="file-upload-placeholder"><img src="icons/card-front.svg" alt="" /></div><div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div></div></div>
+              </div>
+              <div class="file-uploader">
+                <div class="file-upload-label">Back side of your insurance card</div>
+                <div class="file-upload-area"><div class="file-upload-inner"><div class="file-upload-placeholder"><img src="icons/card-back.svg" alt="" /></div><div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div></div></div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- IMAGE UPLOAD EXPERIMENT -->
+    <section id="image-experiment" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>IMAGE_UPLOAD — Experiment</h3><span class="status-badge status-done">Already in Agora</span></div>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Card photos missing (experiment-gated).
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="state-text-group">
+              <div class="headline">Upload your insurance card</div>
+              <div class="body-17">Please upload photos of your insurance card before your first appointment. This helps us verify your benefits, file claims, and troubleshoot any insurance issues that may come up.</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="file-uploader">
+                <div class="file-upload-label">Front side of your insurance card</div>
+                <div class="file-upload-area"><div class="file-upload-inner"><div class="file-upload-placeholder"><img src="icons/card-front.svg" alt="" /></div><div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div></div></div>
+              </div>
+              <div class="file-uploader">
+                <div class="file-upload-label">Back side of your insurance card</div>
+                <div class="file-upload-area"><div class="file-upload-inner"><div class="file-upload-placeholder"><img src="icons/card-back.svg" alt="" /></div><div class="file-upload-cta"><span class="upload-icon-20"><img src="icons/upload.svg" alt="" /></span> Drag file or <a href="#">upload from computer</a></div></div></div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+              <button class="btn-secondary">Skip for now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- COMPLETE VERIFIED -->
+    <section id="complete-verified" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>COMPLETE — Verified</h3><span class="status-badge status-done">Already in Agora</span></div>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Task complete, no blocking issues, insurance verified successfully.
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/video-camera.svg" alt="" /></span>Video session</div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="appt-card-divider" />
+                <div class="appt-card-payment-grid">
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/money.svg" alt="" /></div><div class="caption">Book now, pay after session</div></div>
+                  <div class="appt-card-payment-detail"><div class="icon-20"><img src="icons/armchair.svg" alt="" /></div><div class="caption">Free cancellation until April 1, 7:30pm</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Your insurance is verified</div>
+            <div class="card">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="body-16-m">Aetna</span>
+                <span class="badge badge-positive">Verified</span>
+              </div>
+              <div class="caption" style="color: var(--gray-800); margin-bottom: 16px;">HMO • Member ID: ACTIVE123</div>
+              <div style="background: var(--gray-200); padding: 16px; border-radius: 6px;">
+                <div class="caption" style="color: var(--gray-800); margin-bottom: 4px;">Estimated cost per session</div>
+                <div class="headline-sm">$25 – $45</div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+              <button class="btn-secondary">Update insurance</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<!-- COMPLETE OUTAGE -->
+    <section id="complete-outage" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>COMPLETE — Verification in progress</h3><span class="status-badge status-done">Already in Agora</span></div>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> <code>insurance.isInOutage === true</code>. Two sub-variants: "old data" (uses last session cost) or "no data" (flat fee).
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Your insurance</div>
+            <div class="card">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="body-16-m">Blue Cross Blue Shield</span>
+                <span class="badge badge-warning">Verification in progress</span>
+              </div>
+            </div>
+            <div class="guidance-warning">
+              <div class="body-16-m" style="margin-bottom: 4px;">Verification temporarily unavailable</div>
+              <div class="body-16">Benefit verification for your plan is currently unavailable, so we'll use the estimated cost of your sessions until verification completes.</div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<section id="complete-selfpay" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>COMPLETE — Self-pay / Off-platform</h3><span class="status-badge status-done">Already in Agora</span></div>
+      </div>
+      <div class="when-block">
+        <strong>When:</strong> Ported patient is self-pay or off-platform.
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Ongoing care with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/money.svg" alt="" /></span>$150 private pay</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Billing method</div>
+            <div class="card">
+              <div class="body-16-m">Private pay</div>
+              <div class="caption" style="color: var(--gray-800); margin-top: 4px;">You'll be charged $150 after each session.</div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+
+    <h2>3. Already in Agora — Lookup errors</h2>
+<section id="error-oon" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>OUT_OF_NETWORK</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div class="when-block">
+        <strong>When:</strong> Carrier OON OR not accepted in patient's state.
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Let's get your insurance</div>
+            <div class="guidance-error">
+              <div class="body-16-m" style="margin-bottom: 4px;">Your plan is not accepted on Headway</div>
+              <div class="body-16">If you have a new plan, or your insurance info has changed, try updating your details to match your latest insurance card.</div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Update insurance</button>
+              <button class="btn-secondary">Skip for now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<section id="error-failed" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>LOOKUP_FAILED — Inline field errors</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div class="when-block">
+        <strong>When:</strong> Payer returned error codes 65/73 (name), 58/60/71 (DOB), or 72/76 (member ID).
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Let's get your insurance</div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div>
+                <label class="label">Member ID</label>
+                <input class="input input-error" value="12345" />
+                <div class="field-error">We can't find a plan that matches this member ID. Please double check the number on your insurance card.</div>
+              </div>
+              <div>
+                <label class="label">Date of birth</label>
+                <input class="input input-error" value="01/15/1990" />
+                <div class="field-error">We can't find a plan that matches this date of birth. Please double check.</div>
+              </div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<section id="error-fuzzy" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>VERIFY_FUZZY_MATCH — Modal</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div class="when-block">
+        <strong>When:</strong> <code>isFuzzyMatched === true</code> OR carrier auto-corrected.
+      </div>
+<div class="modal-overlay">
+        <div class="modal">
+          <div class="headline-sm" style="margin-bottom: 12px;">Did you mean this?</div>
+          <p class="body-16" style="margin-bottom: 20px;">We found a close match for your insurance.</p>
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="body-16-m">Blue Cross Blue Shield of Massachusetts</div>
+            <div class="caption" style="color: var(--gray-800); margin-top: 6px;">Member ID: 12345ABC</div>
+          </div>
+          <div class="btn-stack">
+            <button class="btn-primary">Confirm</button>
+            <button class="btn-secondary">Dismiss</button>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+<section id="error-manual" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>MANUAL_VERIFICATION_REQUIRED</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div class="when-block">
+        <strong>When:</strong> <code>manualVerificationRequired === true</code> — backend needs human review.
+      </div>
+<div class="agora-wrap">
+        <div class="agora-left">
+          <div class="agora-left-overlay">
+            <div class="headway-logo-img"><img src="icons/headway-logo.svg" alt="Headway" /></div>
+            <div class="appt-card-wrap">
+              <div class="appt-card-branded">
+                <div class="appt-card-top">
+                  <div class="appt-card-avatar">G</div>
+                  <div class="appt-card-info">
+                    <div class="appt-card-title">Session with Georgia</div>
+                    <div class="appt-card-rows">
+                      <div class="appt-card-row"><span class="icon-20"><img src="icons/calendar-check.svg" alt="" /></span>Apr 3rd, 7:30pm-8:30pm</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="agora-right">
+          <button class="back-button"><span class="icon-24"><img src="icons/chevron-left.svg" alt="" /></span>Back to Georgia's profile</button>
+          <div class="progress-bar">
+            <div class="progress-step"><div class="progress-circle progress-completed">✓</div><span class="progress-label progress-label-pending">Account</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-active">2</div><span class="progress-label progress-label-active">Insurance</span></div>
+            <div class="progress-line"></div>
+            <div class="progress-step"><div class="progress-circle progress-pending">3</div><span class="progress-label progress-label-pending">Payment</span></div>
+          </div>
+          <div class="state-content">
+            <div class="headline">Let's get your insurance</div>
+            <div class="guidance-error">
+              <div class="body-16-m" style="margin-bottom: 4px;">Unable to verify your plan</div>
+              <div class="body-16">Check your insurance info to make sure it matches the details on your most recent insurance card. Still getting this message? <a href="#" style="color: var(--red-border); text-decoration: underline;">See more details and what you can do</a></div>
+            </div>
+            <div class="btn-stack">
+              <button class="btn-primary">Update insurance</button>
+              <button class="btn-secondary">Skip for now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+    
+
+    <h2>4. Already in Agora — Verification alert banners</h2>
+<section id="banner-referral" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>Referral Required (Priority 2)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-error">
+          <div class="body-16-m" style="margin-bottom: 4px;">Your account is paused</div>
+          <div class="body-16">Your insurance plan requires a referral before you can use mental health benefits. Please contact your primary care provider to get a referral.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="banner-terminated" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>Plan Terminated (Priority 4)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-error">
+          <div class="body-16-m" style="margin-bottom: 4px;">This plan is no longer active</div>
+          <div class="body-16">According to your insurance company, this plan has been terminated. Please update with your current insurance details.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="banner-no-mh" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>No Mental Health Benefits (Priority 5)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-error">
+          <div class="body-16-m" style="margin-bottom: 4px;">Your plan doesn't include mental health coverage</div>
+          <div class="body-16">Your insurance plan doesn't include outpatient mental health benefits. You can still book sessions using self-pay.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="banner-no-sessions" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>No Sessions Remaining (Priority 10)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-error">
+          <div class="body-16-m" style="margin-bottom: 4px;">You have no remaining sessions covered by your plan</div>
+          <div class="body-16">You've used all of your covered sessions for this plan year. You can still book sessions using self-pay.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="banner-approaching" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>Approaching Session Limit (Priority 9)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-warning">
+          <div class="body-16-m" style="margin-bottom: 4px;">You've used most of your covered sessions for this plan year</div>
+          <div class="body-16">You have about 3 sessions remaining on your plan.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="banner-outage" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>System Outage (Priority 1 — highest)</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-warning">
+          <div class="body-16-m" style="margin-bottom: 4px;">Insurance Systems Down</div>
+          <div class="body-16">Our insurance processing partner is down. You can still book an appointment — we'll verify your benefits once systems are back online.</div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    <h2>5. Already in Agora — Secondary insurance</h2>
+<section id="secondary-oon" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>Secondary Out of Network</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-warning">
+          <div class="body-16-m" style="margin-bottom: 4px;">Your secondary insurance is not accepted</div>
+          <div class="body-16">Your secondary insurance plan with Kaiser is not accepted by Headway. Your primary insurance will be used to cover your sessions.</div>
+        </div>
+      </div>
+    </section>
+
+    
+<section id="secondary-swap" class="state-block">
+      <div class="state-header"><div class="state-title"><h3>Primary Detected as Secondary</h3><span class="status-badge status-done">Already in Agora</span></div></div>
+      <div style="padding: 32px;">
+        <div class="guidance-warning" style="margin-bottom: 16px;">
+          <div class="body-16-m" style="margin-bottom: 4px;">It looks like the insurance you entered is your secondary insurance</div>
+          <div class="body-16">We detected that this plan is actually your secondary insurance. If that's not right, you can keep it as primary.</div>
+        </div>
+        <button class="btn-secondary" style="width: auto; padding: 12px 24px;">Keep as primary insurance</button>
+      </div>
+    </section>
+
+    
+
+    <h2>6. Already in Agora — Subscriber / Dependent errors</h2>
+<section id="sub-dep" class="state-block">
+      <div class="state-header">
+        <div class="state-title"><h3>Role Mismatch</h3><span class="status-badge status-done">Already in Agora</span></div>
+        <p class="state-desc">Self-identified role doesn't match what the lookup returned.</p>
+      </div>
+      <div style="padding: 32px; display: flex; flex-direction: column; gap: 20px;">
+        <div class="guidance-warning">
+          <div class="body-16-m" style="margin-bottom: 4px;">We need to double-check your plan details</div>
+          <div class="body-16">You told us you're the subscriber of this plan, but your insurance carrier shows you as a dependent. Let's make sure we have the right info.</div>
+        </div>
+        <div class="card">
+          <div class="body-16-m" style="margin-bottom: 12px;">Who is the primary subscriber on this plan?</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="radio-card"><div style="display: flex; gap: 12px; align-items: center;"><div class="radio-dot"></div><span class="body-16">I am the subscriber</span></div></div>
+            <div class="radio-card"><div style="display: flex; gap: 12px; align-items: center;"><div class="radio-dot"></div><span class="body-16">Someone else (spouse, parent, etc.)</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+<div style="text-align: center; padding: 32px 0; color: var(--gray-800); font-size: 13px;">
+      Approximate mockups — not pixel-perfect. Based on Agora Checkout 2.0 Figma spec.
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
