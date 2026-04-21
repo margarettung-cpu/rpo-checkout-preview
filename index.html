@@ -712,6 +712,23 @@
 
   .insurance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; font-size: 14px; color: var(--gray-900); margin-top: 12px; }
   .insurance-grid .label-small { color: var(--gray-800); font-size: 13px; }
+
+  /* ===== Fullscreen mode for prototypes ===== */
+  .fs-toggle {
+    background: transparent; color: var(--gray-1000);
+    border: 1px solid var(--gray-500); border-radius: 6px;
+    padding: 6px 12px; font-family: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    margin-left: 8px;
+  }
+  .fs-toggle:hover { background: var(--gray-200); }
+  body.fullscreen-mode .top-header { display: none; }
+  body.fullscreen-mode .proto-viewer.active {
+    position: fixed; inset: 0; z-index: 40;
+    overflow: auto; background: var(--beige-100);
+  }
+  body.fullscreen-mode .proto-nav { top: 0; }
+  body.fullscreen-mode { overflow: hidden; }
 </style>
 </head>
 <body>
@@ -3693,6 +3710,7 @@
     document.querySelectorAll('.proto-viewer').forEach(v => v.classList.remove('active'));
     document.getElementById('proto-' + flow).classList.add('active');
     currentProto = flow;
+    document.body.classList.add('has-active-proto');
     gotoStep(1);
   };
   function gotoStep(step) {
@@ -3727,8 +3745,44 @@
     document.querySelectorAll('.proto-viewer').forEach(v => v.classList.remove('active'));
     document.getElementById('proto-landing').style.display = 'block';
     currentProto = null;
+    document.body.classList.remove('has-active-proto');
+    if (document.body.classList.contains('fullscreen-mode')) exitFullscreenMode();
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
+
+  function setFsLabel(text) {
+    document.querySelectorAll('.fs-toggle-label').forEach(l => l.textContent = text);
+  }
+  function enterFullscreenMode() {
+    document.body.classList.add('fullscreen-mode');
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    setFsLabel('↙ Exit full screen');
+  }
+  function exitFullscreenMode() {
+    document.body.classList.remove('fullscreen-mode');
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    setFsLabel('⛶ Full screen');
+  }
+  // Inject a fullscreen toggle button into each prototype's nav
+  document.querySelectorAll('.proto-viewer .proto-nav-right').forEach(right => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fs-toggle';
+    btn.setAttribute('aria-label', 'Toggle full screen');
+    btn.innerHTML = '<span class="fs-toggle-label">⛶ Full screen</span>';
+    btn.addEventListener('click', () => {
+      if (document.body.classList.contains('fullscreen-mode')) exitFullscreenMode();
+      else enterFullscreenMode();
+    });
+    right.appendChild(btn);
+  });
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && document.body.classList.contains('fullscreen-mode')) {
+      exitFullscreenMode();
+    }
+  });
+
 </script>
 
 </body>
