@@ -1,0 +1,23 @@
+index.html
+  2b35a30602d5eda0 715-731,3713,3748-3749,3752-3785
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.1",
+  "base_commit_sha": "5ab917a1a368072675794f69019fd8076dd2ab49",
+  "prompts": {
+    "2b35a30602d5eda0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "292efb1b-c878-40ca-945b-1f394a9a45ef",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "margaret",
+      "messages": [],
+      "total_additions": 54,
+      "total_deletions": 0,
+      "accepted_lines": 54,
+      "overriden_lines": 0
+    }
+  }
+}
